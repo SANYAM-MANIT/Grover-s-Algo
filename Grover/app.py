@@ -7,7 +7,7 @@ from qiskit_aer import AerSimulator
 app = Flask(__name__)
 backend = AerSimulator()
 
-MAX_QUBITS = 6
+MAX_QUBITS = 10
 
 def run_grover(target_data):
     n_qubits = len(target_data)
