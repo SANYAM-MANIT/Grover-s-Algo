@@ -4,12 +4,11 @@ from flask import Flask, render_template, request
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
 
-app = Flask(__name__)
+# 👇 Tell Flask your custom folder names
+app = Flask(__name__, template_folder="Templates", static_folder="Static")
 
-# Create simulator once (better performance)
 backend = AerSimulator()
 
-# Limit to prevent heavy computation
 MAX_QUBITS = 10
 
 
@@ -42,10 +41,8 @@ def run_grover(target_data):
     c = ClassicalRegister(n_qubits)
     qc = QuantumCircuit(q, c)
 
-    # Superposition
     qc.h(range(n_qubits))
 
-    # Grover iterations
     iterations = int(math.pi / 4 * math.sqrt(2 ** n_qubits))
 
     for _ in range(iterations):
@@ -54,11 +51,9 @@ def run_grover(target_data):
 
     qc.measure(q, c)
 
-    # Run simulation
     result = backend.run(transpile(qc, backend), shots=1024).result()
     counts = result.get_counts()
 
-    # Convert to percentage
     probs = {
         state: round((count / 1024) * 100, 2)
         for state, count in counts.items()
@@ -75,7 +70,6 @@ def index():
     if request.method == "POST":
         password = request.form.get("password", "")
 
-        # Validation
         if not password:
             results = {"Error": "Input required"}
         elif not all(c in '01' for c in password):
@@ -88,7 +82,6 @@ def index():
     return render_template("index.html", results=results, password=password)
 
 
-# For deployment (Render/Railway)
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
