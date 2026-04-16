@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grover Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>🔐 Grover Password Search</h1>
+
+    <form method="POST">
+        <input type="text" name="password" placeholder="Enter binary password" value="{{password}}" required>
+        <button type="submit">Run Algorithm</button>
+    </form>
+
+    {% if results %}
+        <div class="results">
+            <h2>📊 Results</h2>
+            <table>
+                <tr>
+                    <th>State</th>
+                    <th>Probability (%)</th>
+                </tr>
+                {% for state, prob in results.items() %}
+                <tr>
+                    <td>{{state}}</td>
+                    <td>{{prob}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
