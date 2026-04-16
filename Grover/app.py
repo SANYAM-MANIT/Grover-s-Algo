@@ -1,9 +1,13 @@
 import math
+import os
 from flask import Flask, render_template, request
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
 
 app = Flask(__name__)
+backend = AerSimulator()
+
+MAX_QUBITS = 6
 
 def run_grover(target_data):
     n_qubits = len(target_data)
@@ -12,9 +16,11 @@ def run_grover(target_data):
         for i, bit in enumerate(reversed(target)):
             if bit == '0':
                 qc.x(i)
+
         qc.h(n-1)
         qc.mcx(list(range(n-1)), n-1)
         qc.h(n-1)
+
         for i, bit in enumerate(reversed(target)):
             if bit == '0':
                 qc.x(i)
@@ -42,13 +48,10 @@ def run_grover(target_data):
 
     qc.measure(q, c)
 
-    backend = AerSimulator()
     result = backend.run(transpile(qc, backend), shots=1024).result()
     counts = result.get_counts()
 
-    # Convert to percentage
-    probs = {state: round((count/1024)*100, 2) for state, count in counts.items()}
-    return probs
+    return {state: round((count/1024)*100, 2) for state, count in counts.items()}
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -58,13 +61,14 @@ def index():
     if request.method == "POST":
         password = request.form["password"]
 
-        # validation
         if not all(c in '01' for c in password):
             results = {"Error": "Only binary allowed"}
+        elif len(password) > MAX_QUBITS:
+            results = {"Error": f"Max {MAX_QUBITS} bits allowed"}
         else:
             results = run_grover(password)
 
     return render_template("index.html", results=results, password=password)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
