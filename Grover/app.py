@@ -1,4 +1,5 @@
 import math
+import os
 from flask import Flask, render_template, request
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
