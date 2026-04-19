@@ -4,14 +4,29 @@
     <title>Grover Search</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<script>
+function clearInput() {
+    document.querySelector('input[name="password"]').value = "";
+}
+</script>
 <body>
-
 <div class="container">
     <h1>🔐 Grover Password Search</h1>
 
     <form method="POST">
-        <input type="text" name="password" placeholder="Enter binary password" value="{{password}}" required>
-        <button type="submit">Run Algorithm</button>
+    <div class="input-wrapper">
+    <input 
+        type="text" 
+        name="password" 
+        placeholder="Enter binary password" 
+        value="{{ password if results else '' }}" 
+        required>
+        
+    <button type="button" class="reset-btn" onclick="window.location.href='/'">
+    Reset
+    </button>
+    </div>
+    <button type="submit">Run Algorithm</button>
     </form>
 
     {% if results %}
@@ -31,6 +46,13 @@
             </table>
         </div>
     {% endif %}
+{% if classical_time and quantum_time %}
+<div class="timing-box">
+    <h2>⏱ Time Comparison</h2>
+    <p><strong>Classical Time:</strong> {{ classical_time }} steps</p>
+    <p><strong>Quantum Time (Grover):</strong> {{ quantum_time }} steps</p>
+</div>
+{% endif %}
 </div>
 <footer class="footer">
     <div class="footer-content">
