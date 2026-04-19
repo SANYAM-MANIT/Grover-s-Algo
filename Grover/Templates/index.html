@@ -31,6 +31,13 @@
             </table>
         </div>
     {% endif %}
+{% if classical_time and quantum_time %}
+<div class="timing-box">
+    <h2>⏱ Time Comparison</h2>
+    <p><strong>Classical Time:</strong> {{ classical_time }} steps</p>
+    <p><strong>Quantum Time (Grover):</strong> {{ quantum_time }} steps</p>
+</div>
+{% endif %}
 </div>
 <footer class="footer">
     <div class="footer-content">
