@@ -61,7 +61,8 @@ def run_grover(target_data):
 
     return probs
 
-
+classical_time = None
+quantum_time = None
 @app.route("/", methods=["GET", "POST"])
 def index():
     results = None
@@ -78,8 +79,16 @@ def index():
             results = {"Error": f"Max {MAX_QUBITS} bits allowed"}
         else:
             results = run_grover(password)
+            classical_time = 2 ** n
+            quantum_time = int(math.sqrt(2 ** n))
 
-    return render_template("index.html", results=results, password=password)
+    return render_template(
+        "index.html",
+        results=results,
+        password=password,
+        classical_time=classical_time,
+        quantum_time=quantum_time
+    )
 
 
 if __name__ == "__main__":
