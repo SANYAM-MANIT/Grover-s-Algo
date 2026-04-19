@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
 
-app = Flask(__name__, template_folder="Templates")
+app = Flask(__name__, template_folder="Templates",static_folder="Static")
 
 def run_grover(target_data):
     n_qubits = len(target_data)
